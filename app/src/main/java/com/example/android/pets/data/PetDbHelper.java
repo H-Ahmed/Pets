@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.android.pets.data.PetContract.PetEntry;
 
 /**
- * Created by Hesham on 9/24/2017.
+ * Database helper for Pets app. Manages database creation and version management.
  */
 
 public class PetDbHelper extends SQLiteOpenHelper {
@@ -15,25 +15,26 @@ public class PetDbHelper extends SQLiteOpenHelper {
     /**
      * Database version. If you change the database schema, you must increment the database version.
      */
-    public static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 1;
 
     /** Name of the database file */
-    public static final String DATABASE_NAME = "shelter.db";
+    private static final String DATABASE_NAME = "shelter.db";
 
 
     /**
-     *
-     * @param context
+     *Constructs a new instance of {@link PetDbHelper}
+     * @param context of the app
      */
     public PetDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
 
-
+    /**
+     * This is called when the database is created for the first time.
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Create table pets
         // Create a String that contains the SQL statment to create the pets table
         String SQL_CREATE_ENTRIES = "CREATE TABLE "
                 + PetEntry.TABLE_NAME
@@ -43,21 +44,15 @@ public class PetDbHelper extends SQLiteOpenHelper {
                 + PetEntry.COLUMN_PET_GENDER + " INTEGER,"
                 + PetEntry.COLUMN_PET_WEIGHT + " INTEGER DEFAULT 0)";
 
+        // Execute the SQL statement
         db.execSQL(SQL_CREATE_ENTRIES);
     }
 
+    /**
+     * This is called when the database needs to be upgraded.
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Delete data in pet table
-        String SQL_DELETE_ENTRIES =
-                "DROP TABLE IF EXISTS " + PetEntry.TABLE_NAME;
-
-        db.execSQL(SQL_DELETE_ENTRIES);
-        onCreate(db);
-    }
-
-    @Override
-    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        super.onDowngrade(db, oldVersion, newVersion);
+        // The database is still at version 1, so there's nothing to do be done here.
     }
 }
